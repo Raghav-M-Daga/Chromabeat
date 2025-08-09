@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils"
+import { X } from "lucide-react"
 
 export default function MistakesIndicator({ mistakes }: { mistakes: number }) {
     return (
@@ -8,7 +9,7 @@ export default function MistakesIndicator({ mistakes }: { mistakes: number }) {
                     key={i}
                     className={cn("w-6 h-6 relative transition-all duration-300", i < mistakes ? "opacity-100" : "opacity-20")}
                 >
-                    <div className="absolute inset-0 flex items-center justify-center text-red-400 font-bold text-lg">X</div>
+                    <div className="absolute inset-0 flex items-center justify-center text-red-400 text-lg"><X /></div>
                 </div>
             ))}
         </div>

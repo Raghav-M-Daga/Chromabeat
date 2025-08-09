@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react"
 
-type GameMode = "color" | "sound" | "inverse"
-type ButtonColor = "yellow" | "blue" | "green" | "red"
+type GameMode = "color" | "sound" | "combination"
+type ButtonColor = "yellow" | "blue" | "green" | "red";
 
 interface GameState {
     mode: GameMode
@@ -16,13 +16,53 @@ interface GameState {
     maxTime: number
     startTime: number | null
     pausedRemaining: number | null
+    optionMixes: Record<ButtonColor, string> | null
 }
-
-const colorToIndex = (c: ButtonColor, BUTTON_ORDER: ButtonColor[]) => BUTTON_ORDER.indexOf(c)
-const indexToColor = (i: number, BUTTON_ORDER: ButtonColor[]): ButtonColor => BUTTON_ORDER[i as 0 | 1 | 2 | 3]
 
 const getRandomBaseColor = (BUTTON_ORDER: ButtonColor[]): ButtonColor =>
     BUTTON_ORDER[Math.floor(Math.random() * BUTTON_ORDER.length)]
+
+// Allowed mixed color names for inverse mode button options
+const MIX_ALLOWED_NAMES = ["purple", "cyan", "yellow", "brown", "orange", "green", "lime"] as const
+type MixName = (typeof MIX_ALLOWED_NAMES)[number]
+
+// Fixed hex values for each allowed mix name
+const MIX_HEX: Record<MixName, string> = {
+    // Make purple less magenta and more violet
+    purple: "#8000FF",
+    cyan: "#00FFFF",
+    yellow: "#FFD500",
+    brown: "#8B4513",
+    orange: "#FFA500",
+    green: "#2ECC40",
+    lime: "#ADFF2F",
+}
+
+// Valid center+tone combinations and their resulting mix names (unordered pairs)
+const MIX_COMBINATIONS: Array<{ a: ButtonColor; b: ButtonColor; mix: MixName }> = [
+    { a: "red", b: "blue", mix: "purple" },
+    { a: "red", b: "yellow", mix: "orange" },
+    { a: "red", b: "green", mix: "brown" },
+    { a: "blue", b: "yellow", mix: "green" },
+    { a: "blue", b: "green", mix: "cyan" },
+    { a: "yellow", b: "green", mix: "lime" },
+]
+
+const getMixForPair = (c1: ButtonColor, c2: ButtonColor): MixName | null => {
+    for (const { a, b, mix } of MIX_COMBINATIONS) {
+        if ((c1 === a && c2 === b) || (c1 === b && c2 === a)) return mix
+    }
+    return null
+}
+
+const shuffle = <T,>(arr: T[]): T[] => {
+    const copy = [...arr]
+    for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[copy[i], copy[j]] = [copy[j], copy[i]]
+    }
+    return copy
+}
 
 export default function useGameLogic(
     BUTTON_ORDER: ButtonColor[],
@@ -42,15 +82,17 @@ export default function useGameLogic(
         maxTime: 0,
         startTime: null,
         pausedRemaining: null,
+        optionMixes: null,
     })
 
     const startNextRound = useCallback(() => {
         const nextMode: GameMode =
-            (["color", "sound", "inverse"][Math.floor(Math.random() * 3)] as GameMode)
+            (["color", "sound", "combination"][Math.floor(Math.random() * 3)] as GameMode)
 
         let centerColor: ButtonColor = getRandomBaseColor(BUTTON_ORDER)
         let toneColor: ButtonColor = getRandomBaseColor(BUTTON_ORDER)
         let targetColor: ButtonColor
+        let optionMap: Record<ButtonColor, string> | null = null
 
         if (nextMode === "color") {
             centerColor = getRandomBaseColor(BUTTON_ORDER)
@@ -66,16 +108,14 @@ export default function useGameLogic(
             } while (toneColor === centerColor && Math.random() < 0.7)
             targetColor = toneColor
         } else {
-            // inverse
             centerColor = getRandomBaseColor(BUTTON_ORDER)
             do {
                 toneColor = getRandomBaseColor(BUTTON_ORDER)
-            } while (toneColor === centerColor && Math.random() < 0.7)
-            const i = colorToIndex(centerColor, BUTTON_ORDER)
-            const j = colorToIndex(toneColor, BUTTON_ORDER)
-            const k = i ^ j
-            targetColor = indexToColor(k, BUTTON_ORDER)
+            } while (toneColor === centerColor)
+
+            targetColor = toneColor
         }
+
 
         setGameState(prev => {
             const newMaxTime = Math.max(1.5, 5 - 0.2 * prev.score)
@@ -88,6 +128,7 @@ export default function useGameLogic(
                 isPlayerTurn: true,
                 maxTime: newMaxTime,
                 startTime: Date.now(),
+                optionMixes: nextMode === "combination" ? optionMap : null,
             }
         })
 

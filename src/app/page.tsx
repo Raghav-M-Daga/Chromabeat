@@ -24,7 +24,7 @@ const BUTTON_COLORS: Record<ButtonColor, string> = {
     red: "#FF4136",
 }
 
-const INVERTED_BUTTON_COLORS: Record<ButtonColor, string> = {
+const COMBINATION_BUTTON_COLORS: Record<ButtonColor, string> = {
     yellow: "#002AFF",
     blue: "#FF8B26",
     green: "#D133BF",
@@ -32,6 +32,13 @@ const INVERTED_BUTTON_COLORS: Record<ButtonColor, string> = {
 }
 
 const BUTTON_ORDER: ButtonColor[] = ["yellow", "blue", "green", "red"]
+
+const initialButtonPositions: Record<ButtonColor, string> = {
+    yellow: "row-start-1 col-start-2",
+    blue: "row-start-2 col-start-3",
+    green: "row-start-3 col-start-2",
+    red: "row-start-2 col-start-1",
+}
 
 export default function GamePage() {
     const { playTone, getButtonFrequency } = useAudio()
@@ -43,12 +50,40 @@ export default function GamePage() {
     const [showSuccess, setShowSuccess] = useState(false)
     const [isDemoPlaying, setIsDemoPlaying] = useState(false)
     const [multiplayerOpen, setMultiplayerOpen] = useState(false)
-    const [partyCode, setPartyCode] = useState("")
+    const [partyCode, setPartyCode] = useState<ButtonColor[]>([])
+    const [buttonPositions, setButtonPositions] = useState<Record<ButtonColor, string>>(initialButtonPositions)
 
-    const progressRef = useRef<HTMLDivElement>(null!);
+    const progressRef = useRef<HTMLDivElement>(null!)
     const countdownRef = useRef<number | null>(null)
 
-    // Countdown timer effect
+    const rotatePositions = useCallback(() => {
+        const positionCycle = [
+            "row-start-1 col-start-2",
+            "row-start-2 col-start-3",
+            "row-start-3 col-start-2",
+            "row-start-2 col-start-1",
+        ]
+
+        const currentColors = positionCycle.map(cls =>
+            Object.keys(buttonPositions).find(color => buttonPositions[color as ButtonColor] === cls) as ButtonColor
+        )
+
+        const direction = Math.random() < 0.5 ? 'clockwise' : 'counterclockwise'
+        let newColors: ButtonColor[]
+        if (direction === 'clockwise') {
+            newColors = [currentColors[3], currentColors[0], currentColors[1], currentColors[2]]
+        } else {
+            newColors = [currentColors[1], currentColors[2], currentColors[3], currentColors[0]]
+        }
+
+        const newPositions = {} as Record<ButtonColor, string>
+        newColors.forEach((color, idx) => {
+            newPositions[color] = positionCycle[idx]
+        })
+
+        setButtonPositions(newPositions)
+    }, [buttonPositions])
+
     useEffect(() => {
         if (!gameState.isPlayerTurn || gameState.gameOver || gameState.startTime === null || !progressRef.current) {
             if (countdownRef.current !== null) {
@@ -98,7 +133,10 @@ export default function GamePage() {
                             ...p,
                             mistakes: newMistakes,
                         }))
-                        setTimeout(() => startNextRound(), 700)
+                        setTimeout(() => {
+                            rotatePositions()
+                            startNextRound()
+                        }, 700)
                     }
                 }, 800)
             }
@@ -112,7 +150,7 @@ export default function GamePage() {
                 countdownRef.current = null
             }
         }
-    }, [gameState.isPlayerTurn, gameState.gameOver, gameState.startTime, gameState.maxTime, gameState.mistakes, playErrorSound, startNextRound, setGameState])
+    }, [gameState.isPlayerTurn, gameState.gameOver, gameState.startTime, gameState.maxTime, gameState.mistakes, playErrorSound, startNextRound, setGameState, rotatePositions])
 
     const handleButtonClick = useCallback(
         (color: ButtonColor) => {
@@ -131,15 +169,24 @@ export default function GamePage() {
             const isCorrect = color === gameState.targetColor
             if (isCorrect) {
                 setShowSuccess(true)
-                playSuccessSound()
                 setTimeout(() => {
                     setShowSuccess(false)
-                    setGameState(prev => ({ ...prev, score: prev.score + 1 }))
-                    setTimeout(() => startNextRound(), 700)
+                    setGameState(prev => {
+                        const newScore = prev.score + 1
+                        if (newScore >= 5) {
+                            return { ...prev, score: newScore, gameOver: true, isPlayerTurn: false }
+                        }
+                        return { ...prev, score: newScore }
+                    })
+                    setTimeout(() => {
+                        if (!gameState.gameOver) {
+                            rotatePositions()
+                            startNextRound()
+                        }
+                    }, 700)
                 }, 700)
             } else {
                 setShowError(true)
-                playErrorSound()
                 const newMistakes = gameState.mistakes + 1
                 setTimeout(() => {
                     setShowError(false)
@@ -147,7 +194,10 @@ export default function GamePage() {
                         setGameState(prev => ({ ...prev, gameOver: true, mistakes: newMistakes }))
                     } else {
                         setGameState(prev => ({ ...prev, mistakes: newMistakes }))
-                        setTimeout(() => startNextRound(), 700)
+                        setTimeout(() => {
+                            rotatePositions()
+                            startNextRound()
+                        }, 700)
                     }
                 }, 800)
             }
@@ -161,6 +211,7 @@ export default function GamePage() {
             playErrorSound,
             startNextRound,
             setGameState,
+            rotatePositions,
         ],
     )
 
@@ -168,44 +219,45 @@ export default function GamePage() {
         if (isDemoPlaying) return
         setIsDemoPlaying(true)
 
-        const previousCenter = gameState.centerColor
-        const previousTone = gameState.toneColor
-        const previousTurn = gameState.isPlayerTurn
+        const previousState = gameState
 
-        setGameState(prev => {
-            let newState = { ...prev, isPlayerTurn: false }
-            if (prev.isPlayerTurn && prev.startTime !== null) {
-                const elapsed = (Date.now() - prev.startTime) / 1000
-                newState.pausedRemaining = prev.maxTime - elapsed
-                newState.startTime = null
-            }
-            return newState
-        })
+        // Pause game timer and reset board colors to originals
+        setGameState(prev => ({
+            ...prev,
+            isPlayerTurn: false,
+            startTime: null,
+            pausedRemaining:
+                prev.isPlayerTurn && prev.startTime !== null
+                    ? prev.maxTime - (Date.now() - prev.startTime) / 1000
+                    : prev.pausedRemaining,
+            // Center hint switched off during menu to avoid conflicting cues
+            centerColor: null,
+            toneColor: null,
+        }))
 
+        // Show the legend/menu: cycle tones and restore original button colors via centerColor null
         BUTTON_ORDER.forEach((color, index) => {
             setTimeout(() => {
                 setActiveButton(color)
-                setGameState(prev => ({ ...prev, centerColor: color }))
                 playTone(getButtonFrequency(color), 0.35)
                 setTimeout(() => setActiveButton(null), 250)
             }, index * 650)
         })
 
+        // After legend, resume round and timer
         setTimeout(() => {
             setIsDemoPlaying(false)
-            setGameState(prev => {
-                let newState = {
-                    ...prev,
-                    centerColor: previousCenter,
-                    toneColor: previousTone,
-                    isPlayerTurn: previousTurn,
-                }
-                if (previousTurn && prev.pausedRemaining !== null) {
-                    newState.startTime = Date.now() - (prev.maxTime - prev.pausedRemaining) * 1000
-                    newState.pausedRemaining = null
-                }
-                return newState
-            })
+            setGameState(prev => ({
+                ...prev,
+                centerColor: previousState.centerColor,
+                toneColor: previousState.toneColor,
+                isPlayerTurn: previousState.isPlayerTurn,
+                startTime:
+                    previousState.isPlayerTurn && prev.pausedRemaining !== null
+                        ? Date.now() - (previousState.maxTime - prev.pausedRemaining) * 1000
+                        : prev.startTime,
+                pausedRemaining: null,
+            }))
         }, BUTTON_ORDER.length * 650 + 50)
     }, [isDemoPlaying, gameState, setGameState, playTone, getButtonFrequency, setActiveButton, BUTTON_ORDER])
 
@@ -215,7 +267,7 @@ export default function GamePage() {
                 return "bg-black"
             case "sound":
                 return "bg-gradient-to-b from-gray-800 to-black"
-            case "inverse":
+            case "combination":
                 return "bg-[repeating-linear-gradient(45deg,#1a1a1a_0px,#1a1a1a_5px,#2a2a2a_5px,#2a2a2a_10px)]"
             default:
                 return "bg-black"
@@ -224,10 +276,7 @@ export default function GamePage() {
 
     const getCenterIcon = () => {
         if (!gameState.centerColor) return null
-        const bg =
-            gameState.mode === "inverse"
-                ? INVERTED_BUTTON_COLORS[gameState.centerColor]
-                : BUTTON_COLORS[gameState.centerColor]
+        const bg = BUTTON_COLORS[gameState.centerColor];
         return (
             <div
                 className="w-14 h-14 md:w-16 md:h-16 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.25)] border border-white/20"
@@ -237,10 +286,22 @@ export default function GamePage() {
     }
 
     const handleMultiplayerClick = () => {
-        const code = Math.floor(10000 + Math.random() * 90000).toString()
-        setPartyCode(code)
-        setMultiplayerOpen(true)
+        const code = Array.from({ length: 5 }, () => BUTTON_ORDER[Math.floor(Math.random() * BUTTON_ORDER.length)]);
+        setPartyCode(code);
+        setMultiplayerOpen(true);
     }
+
+    const handleStartNewGame = useCallback(() => {
+        setButtonPositions(initialButtonPositions)
+        startNewGame()
+    }, [startNewGame])
+
+    const handleJoin = useCallback((code: ButtonColor[]) => {
+        // TODO: Implement multiplayer connection logic here (e.g., join room with code.join('-'))
+        console.log('Joining multiplayer with code:', code);
+        setMultiplayerOpen(false);
+        // Example: setIsMultiplayer(true); setRoomCode(code);
+    }, [])
 
     return (
         <div
@@ -264,13 +325,14 @@ export default function GamePage() {
             <GameInterface
                 BUTTON_ORDER={BUTTON_ORDER}
                 gameState={gameState}
-                INVERTED_BUTTON_COLORS={INVERTED_BUTTON_COLORS}
+                COMBINATION_BUTTON_COLORS={COMBINATION_BUTTON_COLORS}
                 BUTTON_COLORS={BUTTON_COLORS}
                 handleButtonClick={handleButtonClick}
                 getCenterIcon={getCenterIcon}
                 activeButton={activeButton}
                 showSuccess={showSuccess}
                 isDemoPlaying={isDemoPlaying}
+                buttonPositions={buttonPositions}
             />
 
             <LegendButton
@@ -278,22 +340,44 @@ export default function GamePage() {
                 onClick={playLegend}
             />
 
-            <MultiplayerButton
-                isDemoPlaying={isDemoPlaying}
-                onClick={handleMultiplayerClick}
-            />
+            {/* Restart button (bottom-right) */}
+            <div className="absolute bottom-8 right-8 z-10">
+                <button
+                    aria-label="Restart game"
+                    onClick={handleStartNewGame}
+                    className={cn(
+                        "w-12 h-12 rounded-full bg-white/20 border-2 border-white/60 hover:bg-white/30 transition-all duration-300 flex items-center justify-center",
+                    )}
+                >
+                    {/* reload icon */}
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className="w-6 h-6 text-white/90"
+                    >
+                        <path d="M21 12a9 9 0 1 1-3.51-7.09" />
+                        <path d="M21 3v6h-6" />
+                    </svg>
+                </button>
+            </div>
 
             {(!gameState.isPlaying || gameState.gameOver) && (
                 <StartButton
                     isDemoPlaying={isDemoPlaying}
-                    onClick={startNewGame}
+                    onClick={handleStartNewGame}
                 />
             )}
 
             <MultiplayerDialog
+                BUTTON_COLORS={BUTTON_COLORS}
+                BUTTON_ORDER={BUTTON_ORDER}
                 partyCode={partyCode}
                 multiplayerOpen={multiplayerOpen}
                 setMultiplayerOpen={setMultiplayerOpen}
+                onJoin={handleJoin}
             />
         </div>
     )
