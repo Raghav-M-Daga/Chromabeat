@@ -104,7 +104,7 @@
 
 ---
 
-## ⚔️ Island Mode Rules & Strategies
+## ⚔️ Mode Rules & Strategies
 
 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2em; border-radius: 15px; margin: 1em 0;">
 
