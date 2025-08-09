@@ -73,7 +73,7 @@ export default function GameInterface({
                     let bg = BUTTON_COLORS[color];
 
                     if (gameState.mode === "combination" && gameState.centerColor) {
-                        bg = combineColorsHex(gameState.centerColor, color); // ⬅️ use the mix hex
+                        bg = combineColorsHex(gameState.centerColor, color);
                     }
 
                     const glow = activeButton === color ? `0 0 30px ${bg}` : `0 0 15px ${bg}80`;

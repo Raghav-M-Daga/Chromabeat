@@ -173,9 +173,7 @@ export default function GamePage() {
                     setShowSuccess(false)
                     setGameState(prev => {
                         const newScore = prev.score + 1
-                        if (newScore >= 5) {
-                            return { ...prev, score: newScore, gameOver: true, isPlayerTurn: false }
-                        }
+
                         return { ...prev, score: newScore }
                     })
                     setTimeout(() => {
@@ -221,7 +219,6 @@ export default function GamePage() {
 
         const previousState = gameState
 
-        // Pause game timer and reset board colors to originals
         setGameState(prev => ({
             ...prev,
             isPlayerTurn: false,
@@ -230,12 +227,10 @@ export default function GamePage() {
                 prev.isPlayerTurn && prev.startTime !== null
                     ? prev.maxTime - (Date.now() - prev.startTime) / 1000
                     : prev.pausedRemaining,
-            // Center hint switched off during menu to avoid conflicting cues
             centerColor: null,
             toneColor: null,
         }))
 
-        // Show the legend/menu: cycle tones and restore original button colors via centerColor null
         BUTTON_ORDER.forEach((color, index) => {
             setTimeout(() => {
                 setActiveButton(color)
@@ -244,7 +239,6 @@ export default function GamePage() {
             }, index * 650)
         })
 
-        // After legend, resume round and timer
         setTimeout(() => {
             setIsDemoPlaying(false)
             setGameState(prev => ({
@@ -336,17 +330,18 @@ export default function GamePage() {
             />
 
             <LegendButton
+                isPlaying={gameState.isPlaying}
                 isDemoPlaying={isDemoPlaying}
                 onClick={playLegend}
             />
 
-            {/* Restart button (bottom-right) */}
             <div className="absolute bottom-8 right-8 z-10">
                 <button
                     aria-label="Restart game"
                     onClick={handleStartNewGame}
+                    disabled={gameState.isPlaying}
                     className={cn(
-                        "w-12 h-12 rounded-full bg-white/20 border-2 border-white/60 hover:bg-white/30 transition-all duration-300 flex items-center justify-center",
+                        "w-12 h-12 rounded-full bg-white/20 border-2 border-white/60 hover:bg-white/30 transition-all duration-300 flex items-center justify-center", gameState.isPlaying && "opacity-60 cursor-not-allowed"
                     )}
                 >
                     {/* reload icon */}

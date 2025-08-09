@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 export default function ScoreIndicator({ score }: { score: number }) {
     return (
         <div className="flex space-x-2">
-            {Array.from({ length: Math.max(5, score) }).map((_, i) => (
+            {Array.from({ length: Math.max(1, score) }).map((_, i) => (
                 <div
                     key={i}
                     className={cn(
