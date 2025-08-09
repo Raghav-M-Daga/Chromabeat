@@ -30,7 +30,7 @@
 <strong>🎯 Our Solution:</strong> An audio-visual memory and perception game inspired by Simon Says, built with only colors and tones. You get a central hint and four colored tiles. Depending on the background/mode, you must interpret color and/or tone cues and click the correct tile.
 </div>
 
-### 🎮 Island Game Features
+### 🎮 Game Features
 
 <div style="background-color:#F0F8FF; border: 2px solid #4682B4; padding: 1.5em; border-radius: 10px; margin: 1em 0;">
 
@@ -46,7 +46,7 @@
 
 </div>
 
-### 🛠️ Ship's Technical Arsenal
+### 🛠️ Technical Stack
 
 <div style="background-color:#F5F5F5; border-radius: 10px; padding: 1.5em;">
 
@@ -58,19 +58,19 @@
 
 ---
 
-## 🚢 Set Sail - Getting Started
+## 🚢 Getting Started
 
 <div style="background-color:#E0F6FF; border: 2px dashed #20B2AA; padding: 1.5em; border-radius: 15px;">
 
-### 🧭 **Installation Journey**
+### 🧭 **Installation **
 
-1. **⚓ Anchor your dependencies:**
+1. **Install your dependencies:**
 
    ```bash
    npm install
    ```
 
-2. **🌊 Launch the development vessel:**
+2. **Launch the project:**
 
    ```bash
    npm run dev
@@ -78,7 +78,7 @@
 
    _Next.js will start on port 3000; if busy, it will choose the next available port._
 
-3. **🏗️ Build for the open seas:**
+3. **Build for the production:**
    ```bash
    npm run build
    npm start
@@ -88,7 +88,7 @@
 
 ---
 
-## 🎯 How to Survive the Island _(For Reviewers Only xD)_
+## 🎯 How to play the game
 
 <div style="border: 2px solid #4682B4; padding: 2em; border-radius: 15px; background: linear-gradient(45deg, #E0F6FF, #F0F8FF);">
 
@@ -97,7 +97,6 @@
 - **🚀 Start**: Click the Start button to begin your island adventure
 - **👁️ Observe**: Each round shows a center color and plays a tone depending on the mode
 - **🎯 One Shot**: You have **one click per round** to pick the correct tile
-- **📈 Progress**: Correct answers increase score; wrong answers increase mistakes
 - **💀 Game Over**: Three mistakes → you're marooned on the island!
 - **🗺️ Legend**: Use the bottom-left list button to hear/see each color's tone mapping
 
@@ -134,7 +133,7 @@
 
 ---
 
-## 🏛️ Ship's Architecture
+## 🏛️ Project's Architecture
 
 <div style="background-color:#F5F5F5; border-radius: 10px; padding: 1.5em;">
 
@@ -154,7 +153,7 @@
 
 ---
 
-## 📜 Developer's Island Journal
+## 📜 Developer's Journal
 
 <div style="background-color:#FDF5E6; border: 2px solid #D2691E; padding: 2em; border-radius: 15px; margin: 2em 0;">
 
@@ -198,7 +197,7 @@ _Add accessibility hints (visual patterns) to complement color perception, diffi
 
 ---
 
-## 🚀 Ship's Command Center
+## 🚀 Command Center
 
 <div style="display: flex; justify-content: space-around; margin: 2em 0;">
 
