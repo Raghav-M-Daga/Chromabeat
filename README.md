@@ -133,7 +133,7 @@
 
 ---
 
-## 🏛️ Ship's Architecture
+## 🏛️ Project's Architecture
 
 <div style="background-color:#F5F5F5; border-radius: 10px; padding: 1.5em;">
 
@@ -153,7 +153,7 @@
 
 ---
 
-## 📜 Developer's Island Journal
+## 📜 Developer's Journal
 
 <div style="background-color:#FDF5E6; border: 2px solid #D2691E; padding: 2em; border-radius: 15px; margin: 2em 0;">
 
@@ -197,7 +197,7 @@ _Add accessibility hints (visual patterns) to complement color perception, diffi
 
 ---
 
-## 🚀 Ship's Command Center
+## 🚀 Command Center
 
 <div style="display: flex; justify-content: space-around; margin: 2em 0;">
 
