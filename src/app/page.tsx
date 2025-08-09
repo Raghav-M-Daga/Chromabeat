@@ -24,7 +24,7 @@ const BUTTON_COLORS: Record<ButtonColor, string> = {
     red: "#FF4136",
 }
 
-const INVERTED_BUTTON_COLORS: Record<ButtonColor, string> = {
+const COMBINATION_BUTTON_COLORS: Record<ButtonColor, string> = {
     yellow: "#002AFF",
     blue: "#FF8B26",
     green: "#D133BF",
@@ -50,7 +50,7 @@ export default function GamePage() {
     const [showSuccess, setShowSuccess] = useState(false)
     const [isDemoPlaying, setIsDemoPlaying] = useState(false)
     const [multiplayerOpen, setMultiplayerOpen] = useState(false)
-    const [partyCode, setPartyCode] = useState("")
+    const [partyCode, setPartyCode] = useState<ButtonColor[]>([])
     const [buttonPositions, setButtonPositions] = useState<Record<ButtonColor, string>>(initialButtonPositions)
 
     const progressRef = useRef<HTMLDivElement>(null!)
@@ -260,7 +260,7 @@ export default function GamePage() {
                 return "bg-black"
             case "sound":
                 return "bg-gradient-to-b from-gray-800 to-black"
-            case "inverse":
+            case "combination":
                 return "bg-[repeating-linear-gradient(45deg,#1a1a1a_0px,#1a1a1a_5px,#2a2a2a_5px,#2a2a2a_10px)]"
             default:
                 return "bg-black"
@@ -269,10 +269,7 @@ export default function GamePage() {
 
     const getCenterIcon = () => {
         if (!gameState.centerColor) return null
-        const bg =
-            gameState.mode === "inverse"
-                ? INVERTED_BUTTON_COLORS[gameState.centerColor]
-                : BUTTON_COLORS[gameState.centerColor]
+        const bg = BUTTON_COLORS[gameState.centerColor];
         return (
             <div
                 className="w-14 h-14 md:w-16 md:h-16 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.25)] border border-white/20"
@@ -282,15 +279,22 @@ export default function GamePage() {
     }
 
     const handleMultiplayerClick = () => {
-        const code = Math.floor(10000 + Math.random() * 90000).toString()
-        setPartyCode(code)
-        setMultiplayerOpen(true)
+        const code = Array.from({ length: 5 }, () => BUTTON_ORDER[Math.floor(Math.random() * BUTTON_ORDER.length)]);
+        setPartyCode(code);
+        setMultiplayerOpen(true);
     }
 
     const handleStartNewGame = useCallback(() => {
         setButtonPositions(initialButtonPositions)
         startNewGame()
     }, [startNewGame])
+
+    const handleJoin = useCallback((code: ButtonColor[]) => {
+        // TODO: Implement multiplayer connection logic here (e.g., join room with code.join('-'))
+        console.log('Joining multiplayer with code:', code);
+        setMultiplayerOpen(false);
+        // Example: setIsMultiplayer(true); setRoomCode(code);
+    }, [])
 
     return (
         <div
@@ -314,7 +318,7 @@ export default function GamePage() {
             <GameInterface
                 BUTTON_ORDER={BUTTON_ORDER}
                 gameState={gameState}
-                INVERTED_BUTTON_COLORS={INVERTED_BUTTON_COLORS}
+                COMBINATION_BUTTON_COLORS={COMBINATION_BUTTON_COLORS}
                 BUTTON_COLORS={BUTTON_COLORS}
                 handleButtonClick={handleButtonClick}
                 getCenterIcon={getCenterIcon}
@@ -342,9 +346,12 @@ export default function GamePage() {
             )}
 
             <MultiplayerDialog
+                BUTTON_COLORS={BUTTON_COLORS}
+                BUTTON_ORDER={BUTTON_ORDER}
                 partyCode={partyCode}
                 multiplayerOpen={multiplayerOpen}
                 setMultiplayerOpen={setMultiplayerOpen}
+                onJoin={handleJoin}
             />
         </div>
     )

@@ -8,7 +8,7 @@ export default function LegendButton({ isDemoPlaying, onClick }: { isDemoPlaying
                 onClick={onClick}
                 disabled={isDemoPlaying}
                 className={cn(
-                    "w-12 h-12 rounded-full bg-white/20 border-2 border-white/60 hover:bg-white/30 transition-all duration-300 flex items-center justify-center",
+                    "w-12 h-12 rounded-full bg-white/20 border-2 border-white/60 hover:bg-white/30 transition-all duration-300 flex items-center justify-center hover:cursor-pointer",
                     isDemoPlaying && "opacity-60 cursor-not-allowed",
                 )}
             >

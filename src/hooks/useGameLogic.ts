@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react"
 
-type GameMode = "color" | "sound" | "inverse"
-type ButtonColor = "yellow" | "blue" | "green" | "red"
+type GameMode = "color" | "sound" | "combination"
+type ButtonColor = "yellow" | "blue" | "green" | "red";
 
 interface GameState {
     mode: GameMode
@@ -17,9 +17,6 @@ interface GameState {
     startTime: number | null
     pausedRemaining: number | null
 }
-
-const colorToIndex = (c: ButtonColor, BUTTON_ORDER: ButtonColor[]) => BUTTON_ORDER.indexOf(c)
-const indexToColor = (i: number, BUTTON_ORDER: ButtonColor[]): ButtonColor => BUTTON_ORDER[i as 0 | 1 | 2 | 3]
 
 const getRandomBaseColor = (BUTTON_ORDER: ButtonColor[]): ButtonColor =>
     BUTTON_ORDER[Math.floor(Math.random() * BUTTON_ORDER.length)]
@@ -46,7 +43,7 @@ export default function useGameLogic(
 
     const startNextRound = useCallback(() => {
         const nextMode: GameMode =
-            (["color", "sound", "inverse"][Math.floor(Math.random() * 3)] as GameMode)
+            (["color", "sound", "combination"][Math.floor(Math.random() * 3)] as GameMode)
 
         let centerColor: ButtonColor = getRandomBaseColor(BUTTON_ORDER)
         let toneColor: ButtonColor = getRandomBaseColor(BUTTON_ORDER)
@@ -66,16 +63,14 @@ export default function useGameLogic(
             } while (toneColor === centerColor && Math.random() < 0.7)
             targetColor = toneColor
         } else {
-            // inverse
             centerColor = getRandomBaseColor(BUTTON_ORDER)
             do {
                 toneColor = getRandomBaseColor(BUTTON_ORDER)
-            } while (toneColor === centerColor && Math.random() < 0.7)
-            const i = colorToIndex(centerColor, BUTTON_ORDER)
-            const j = colorToIndex(toneColor, BUTTON_ORDER)
-            const k = i ^ j
-            targetColor = indexToColor(k, BUTTON_ORDER)
+            } while (toneColor === centerColor)
+
+            targetColor = toneColor
         }
+
 
         setGameState(prev => {
             const newMaxTime = Math.max(1.5, 5 - 0.2 * prev.score)
