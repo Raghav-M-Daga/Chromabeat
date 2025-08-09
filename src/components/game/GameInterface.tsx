@@ -4,13 +4,6 @@ import { cn } from "@/lib/utils"
 type GameMode = "color" | "sound" | "inverse"
 type ButtonColor = "yellow" | "blue" | "green" | "red"
 
-const buttonGridPositions: Record<ButtonColor, string> = {
-    yellow: "row-start-1 col-start-2",
-    blue: "row-start-2 col-start-3",
-    green: "row-start-3 col-start-2",
-    red: "row-start-2 col-start-1",
-}
-
 interface GameInterfaceProps {
     BUTTON_ORDER: ButtonColor[]
     gameState: {
@@ -25,6 +18,7 @@ interface GameInterfaceProps {
     activeButton: ButtonColor | null
     showSuccess: boolean
     isDemoPlaying: boolean
+    buttonPositions: Record<ButtonColor, string>
 }
 
 export default function GameInterface({
@@ -37,6 +31,7 @@ export default function GameInterface({
     activeButton,
     showSuccess,
     isDemoPlaying,
+    buttonPositions,
 }: GameInterfaceProps) {
     return (
         <div className="w-full min-h-screen flex items-center justify-center p-8">
@@ -51,7 +46,7 @@ export default function GameInterface({
                             key={color}
                             onClick={() => handleButtonClick(color)}
                             className={cn(
-                                buttonGridPositions[color],
+                                buttonPositions[color],
                                 "h-[var(--d)] w-[var(--d)] rotate-45 transition-all duration-200",
                                 "shadow-lg hover:scale-105 active:scale-95 hover:cursor-pointer",
                                 activeButton === color && "scale-110 brightness-150",

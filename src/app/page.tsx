@@ -33,6 +33,13 @@ const INVERTED_BUTTON_COLORS: Record<ButtonColor, string> = {
 
 const BUTTON_ORDER: ButtonColor[] = ["yellow", "blue", "green", "red"]
 
+const initialButtonPositions: Record<ButtonColor, string> = {
+    yellow: "row-start-1 col-start-2",
+    blue: "row-start-2 col-start-3",
+    green: "row-start-3 col-start-2",
+    red: "row-start-2 col-start-1",
+}
+
 export default function GamePage() {
     const { playTone, getButtonFrequency } = useAudio()
     const { playSuccessSound, playErrorSound } = useGameSounds(playTone)
@@ -44,11 +51,39 @@ export default function GamePage() {
     const [isDemoPlaying, setIsDemoPlaying] = useState(false)
     const [multiplayerOpen, setMultiplayerOpen] = useState(false)
     const [partyCode, setPartyCode] = useState("")
+    const [buttonPositions, setButtonPositions] = useState<Record<ButtonColor, string>>(initialButtonPositions)
 
-    const progressRef = useRef<HTMLDivElement>(null!);
+    const progressRef = useRef<HTMLDivElement>(null!)
     const countdownRef = useRef<number | null>(null)
 
-    // Countdown timer effect
+    const rotatePositions = useCallback(() => {
+        const positionCycle = [
+            "row-start-1 col-start-2",
+            "row-start-2 col-start-3",
+            "row-start-3 col-start-2",
+            "row-start-2 col-start-1",
+        ]
+
+        const currentColors = positionCycle.map(cls =>
+            Object.keys(buttonPositions).find(color => buttonPositions[color as ButtonColor] === cls) as ButtonColor
+        )
+
+        const direction = Math.random() < 0.5 ? 'clockwise' : 'counterclockwise'
+        let newColors: ButtonColor[]
+        if (direction === 'clockwise') {
+            newColors = [currentColors[3], currentColors[0], currentColors[1], currentColors[2]]
+        } else {
+            newColors = [currentColors[1], currentColors[2], currentColors[3], currentColors[0]]
+        }
+
+        const newPositions = {} as Record<ButtonColor, string>
+        newColors.forEach((color, idx) => {
+            newPositions[color] = positionCycle[idx]
+        })
+
+        setButtonPositions(newPositions)
+    }, [buttonPositions])
+
     useEffect(() => {
         if (!gameState.isPlayerTurn || gameState.gameOver || gameState.startTime === null || !progressRef.current) {
             if (countdownRef.current !== null) {
@@ -98,7 +133,10 @@ export default function GamePage() {
                             ...p,
                             mistakes: newMistakes,
                         }))
-                        setTimeout(() => startNextRound(), 700)
+                        setTimeout(() => {
+                            rotatePositions()
+                            startNextRound()
+                        }, 700)
                     }
                 }, 800)
             }
@@ -112,7 +150,7 @@ export default function GamePage() {
                 countdownRef.current = null
             }
         }
-    }, [gameState.isPlayerTurn, gameState.gameOver, gameState.startTime, gameState.maxTime, gameState.mistakes, playErrorSound, startNextRound, setGameState])
+    }, [gameState.isPlayerTurn, gameState.gameOver, gameState.startTime, gameState.maxTime, gameState.mistakes, playErrorSound, startNextRound, setGameState, rotatePositions])
 
     const handleButtonClick = useCallback(
         (color: ButtonColor) => {
@@ -135,7 +173,10 @@ export default function GamePage() {
                 setTimeout(() => {
                     setShowSuccess(false)
                     setGameState(prev => ({ ...prev, score: prev.score + 1 }))
-                    setTimeout(() => startNextRound(), 700)
+                    setTimeout(() => {
+                        rotatePositions()
+                        startNextRound()
+                    }, 700)
                 }, 700)
             } else {
                 setShowError(true)
@@ -147,7 +188,10 @@ export default function GamePage() {
                         setGameState(prev => ({ ...prev, gameOver: true, mistakes: newMistakes }))
                     } else {
                         setGameState(prev => ({ ...prev, mistakes: newMistakes }))
-                        setTimeout(() => startNextRound(), 700)
+                        setTimeout(() => {
+                            rotatePositions()
+                            startNextRound()
+                        }, 700)
                     }
                 }, 800)
             }
@@ -161,6 +205,7 @@ export default function GamePage() {
             playErrorSound,
             startNextRound,
             setGameState,
+            rotatePositions,
         ],
     )
 
@@ -242,6 +287,11 @@ export default function GamePage() {
         setMultiplayerOpen(true)
     }
 
+    const handleStartNewGame = useCallback(() => {
+        setButtonPositions(initialButtonPositions)
+        startNewGame()
+    }, [startNewGame])
+
     return (
         <div
             className={cn(
@@ -271,6 +321,7 @@ export default function GamePage() {
                 activeButton={activeButton}
                 showSuccess={showSuccess}
                 isDemoPlaying={isDemoPlaying}
+                buttonPositions={buttonPositions}
             />
 
             <LegendButton
@@ -286,7 +337,7 @@ export default function GamePage() {
             {(!gameState.isPlaying || gameState.gameOver) && (
                 <StartButton
                     isDemoPlaying={isDemoPlaying}
-                    onClick={startNewGame}
+                    onClick={handleStartNewGame}
                 />
             )}
 
