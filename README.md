@@ -160,15 +160,15 @@
 
 ### 🌅 **1) Brainstorming: Color- and sound-only game ideas**
 
-_I began by exploring games that rely purely on color. Using AI to ideate, I sifted through puzzle mechanics and emotion-boarding concepts. Many were interesting, but the most approachable, replayable, and instantly fun idea was a Simon Says variant that uses only colors (and later, tones as a sparse cue)._
+_We began by brainstorming the ideas what the game could be like. We wanted to combine the colors with the sounds so it would fit the game._
 
 ### 🏗️ **2) v0 UI: One-shot generation and initial build**
 
-_I defined a simple spec: four circular buttons and a central hint. Using v0, I generated a clean UI scaffold and wired a basic "sequence + playback + click to match" flow. The first pass established: four primary colors and placements, center hint space, simple tones via Web Audio, and round/turn state and scoring._
+_We defined a simple spec: four circular buttons and a central hint. Using v0, We generated a clean UI scaffold and wired a basic "sequence + playback + click to match" flow. The first pass established: four primary colors and placements, center hint space, simple tones via Web Audio, and round/turn state and scoring._
 
 ### 🎨 **3) Tailwind v4 and project setup**
 
-_I integrated Tailwind CSS v4 and switched PostCSS to the new plugin: `postcss.config.js` → `@tailwindcss/postcss`. Utility-first styling with Tailwind; aliases configured via `tsconfig.json` (`@/_`→`./src/_`)._
+_We integrated Tailwind CSS v4 and switched PostCSS to the new plugin: `postcss.config.js` → `@tailwindcss/postcss`. Utility-first styling with Tailwind; aliases configured via `tsconfig.json` (`@/_`→`./src/_`)._
 
 ### ⚡ **4) Refining gameplay: one-click rounds and clearer feedback**
 
@@ -180,7 +180,7 @@ _Each mode got a distinct background for instant recognition: Color (solid black
 
 ### 🎵 **6) Audio clarity and legend button**
 
-_Early tones were too similar, so I spaced pitches widely (e.g., A3/A4/A5/A6). I added a bottom-left "legend" button that cycles each color and plays its tone. During the demo, player input is temporarily paused and resumes afterwards._
+_Early tones were too similar, so We spaced pitches widely (e.g., A3/A4/A5/A6). I added a bottom-left "legend" button that cycles each color and plays its tone. During the demo, player input is temporarily paused and resumes afterwards._
 
 ### 🌈 **7) Striped mode redesign: intuitive color mixing**
 
@@ -190,7 +190,7 @@ _The striped mode went through multiple iterations. The final model: Center is o
 
 _Fixed Tailwind v4 PostCSS error by moving to `@tailwindcss/postcss`, consolidated `cn` utility and class merging, split logic into hooks (`useGameLogic`, `useAudio`) and components for clarity, ensured lints/builds pass, and resolved Windows shell quirks and Next.js port conflicts during dev._
 
-### 🚀 **9) What I'd do next**
+### 🚀 **9) What We'd do next**
 
 _Add accessibility hints (visual patterns) to complement color perception, difficulty scaling with shorter timers and misdirection cues, and online multiplayer with input validation and round syncing via a simple server._
 
@@ -272,16 +272,6 @@ Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 <h3>🏴‍☠️ Built by Shipwrecked Survivors</h3>
 
 This treasure was forged during **Shipwrecked Challenge #2: The Villagers Can't Speak**
-<br>
-_Where communication happens through colors, sounds, and patterns!_
-
-<br>
-
-**Ready to test your survival instincts?** 🏴‍☠️
-<br>
-Set sail with Chromabeat and see how long you can survive! ⚓🎮
-
-</div>
 
 ---
 
