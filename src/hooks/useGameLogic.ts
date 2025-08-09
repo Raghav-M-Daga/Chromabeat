@@ -128,7 +128,7 @@ export default function useGameLogic(
                 isPlayerTurn: true,
                 maxTime: newMaxTime,
                 startTime: Date.now(),
-                optionMixes: nextMode === "inverse" ? optionMap : null,
+                optionMixes: nextMode === "combination" ? optionMap : null,
             }
         })
 
