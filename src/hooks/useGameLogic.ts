@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react"
 
-type GameMode = "color" | "sound" | "inverse"
-type ButtonColor = "yellow" | "blue" | "green" | "red"
+type GameMode = "color" | "sound" | "combination"
+type ButtonColor = "yellow" | "blue" | "green" | "red";
 
 interface GameState {
     mode: GameMode
@@ -18,9 +18,6 @@ interface GameState {
     pausedRemaining: number | null
     optionMixes: Record<ButtonColor, string> | null
 }
-
-const colorToIndex = (c: ButtonColor, BUTTON_ORDER: ButtonColor[]) => BUTTON_ORDER.indexOf(c)
-const indexToColor = (i: number, BUTTON_ORDER: ButtonColor[]): ButtonColor => BUTTON_ORDER[i as 0 | 1 | 2 | 3]
 
 const getRandomBaseColor = (BUTTON_ORDER: ButtonColor[]): ButtonColor =>
     BUTTON_ORDER[Math.floor(Math.random() * BUTTON_ORDER.length)]
@@ -90,7 +87,7 @@ export default function useGameLogic(
 
     const startNextRound = useCallback(() => {
         const nextMode: GameMode =
-            (["color", "sound", "inverse"][Math.floor(Math.random() * 3)] as GameMode)
+            (["color", "sound", "combination"][Math.floor(Math.random() * 3)] as GameMode)
 
         let centerColor: ButtonColor = getRandomBaseColor(BUTTON_ORDER)
         let toneColor: ButtonColor = getRandomBaseColor(BUTTON_ORDER)
@@ -111,27 +108,14 @@ export default function useGameLogic(
             } while (toneColor === centerColor && Math.random() < 0.7)
             targetColor = toneColor
         } else {
-            // inverse: choose from the six valid pairs; ensure the correct mix is present in the 4 options
-            const pair = MIX_COMBINATIONS[Math.floor(Math.random() * MIX_COMBINATIONS.length)]
-            centerColor = pair.a
-            toneColor = pair.b
-            // Prepare 4 distinct option mixes (must include the correct mix)
-            const correctMix = pair.mix
-            const pool = MIX_ALLOWED_NAMES.filter(n => n !== correctMix)
-            const distractors = shuffle(pool).slice(0, 3)
-            const options = shuffle([correctMix, ...distractors])
+            centerColor = getRandomBaseColor(BUTTON_ORDER)
+            do {
+                toneColor = getRandomBaseColor(BUTTON_ORDER)
+            } while (toneColor === centerColor)
 
-            // Encode the option mix colors into state (by mapping to tone slots via BUTTON_ORDER in the UI layer)
-            optionMap = {
-                [BUTTON_ORDER[0]]: MIX_HEX[options[0]],
-                [BUTTON_ORDER[1]]: MIX_HEX[options[1]],
-                [BUTTON_ORDER[2]]: MIX_HEX[options[2]],
-                [BUTTON_ORDER[3]]: MIX_HEX[options[3]],
-            }
-            // The correct answer is the tile showing the correct mix; align it with the tone's slot
-            const correctIndex = options.indexOf(correctMix)
-            targetColor = BUTTON_ORDER[correctIndex]
+            targetColor = toneColor
         }
+
 
         setGameState(prev => {
             const newMaxTime = Math.max(1.5, 5 - 0.2 * prev.score)

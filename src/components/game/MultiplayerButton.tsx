@@ -6,7 +6,7 @@ export default function MultiplayerButton({ isDemoPlaying, onClick }: { isDemoPl
             <button
                 aria-label="Multiplayer mode"
                 onClick={onClick}
-                className={cn("w-12 h-12 rounded-full bg-white/20 border-2 border-white/60 hover:bg-white/30 transition-all duration-300 flex items-center justify-center", isDemoPlaying && "opacity-60 cursor-not-allowed")}
+                className={cn("w-12 h-12 rounded-full bg-white/20 border-2 border-white/60 hover:bg-white/30 transition-all duration-300 flex items-center justify-center hover:cursor-pointer", isDemoPlaying && "opacity-60 cursor-not-allowed")}
                 disabled={isDemoPlaying}
             >
                 <div className="relative w-6 h-6">
