@@ -274,7 +274,3 @@ Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 This treasure was forged during **Shipwrecked Challenge #2: The Villagers Can't Speak**
 
 ---
-
-<div align="center" style="margin-top: 3em;">
-<img src="https://via.placeholder.com/800x200/4682B4/FFFFFF?text=🌊+May+the+beats+guide+you+through+the+storm+🌊" style="border-radius: 10px;">
-</div>
