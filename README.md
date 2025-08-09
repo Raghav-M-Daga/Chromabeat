@@ -1,5 +1,11 @@
 <div align="center">
-  <a href="https://shipwrecked.hackclub.com/?t=ghrm" target="_blank">
+  ## 🏴‍☠️ About the Project
+
+<div style="background-color:#E0F7FA; border-left: 5px solid #0077B6; padding: 1.5em; border-radius: 10px; margin: 1em 0;">
+<strong>⚡ The Challenge:</strong> Create a project without using text - only colors, sounds, and patterns!
+<br><br>
+<strong>🎯 Our Solution:</strong> Chromabeat is an audio-visual memory and perception game inspired by Simon Says, built with only colors and tones. You get a central hint and four colored tiles. Depending on the background/mode, you must interpret color and/or tone cues and click the correct tile.
+</div>="https://shipwrecked.hackclub.com/?t=ghrm" target="_blank">
     <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/739361f1d440b17fc9e2f74e49fc185d86cbec14_badge.png" 
          alt="This project is part of Shipwrecked, the world's first hackathon on an island!" 
          style="width: 45%;">
@@ -32,37 +38,15 @@
 
 ### 🎮 Game Features
 
-<table>
-<tr>
-<td align="center" width="33%">
-
-**🎨 Color Mode**
-<br>
-_Visual Recognition_
-<br>
-Follow the center color indicator and click the matching button
-
-</td>
-<td align="center" width="33%">
-
-**🔊 Sound Mode**
-<br>
-_Auditory Memory_
-<br>
-Listen to tones and identify the button that produced the sound
-
-</td>
-<td align="center" width="33%">
-
-**🧠 Inverse Mode**
-<br>
-_Logical Thinking_
-<br>
-Advanced XOR logic combining color and sound patterns
-
-</td>
-</tr>
-</table>
+- **🎯 Four-button board** with a central hint system
+- **🎨 Three dynamic modes** with distinct visual backgrounds:
+  - **Color Mode** (black background) - Center color is truth, tone is decoy
+  - **Sound Mode** (gradient background) - Tone determines target, center color is decoy
+  - **Striped Mode** (mixing background) - Advanced color mixing logic with XOR patterns
+- **⚡ Round-based gameplay** - One strategic click per round
+- **🎨 Clean Tailwind v4 styling** with subtle animations
+- **🎵 Web Audio tones** with clearly distinct pitches
+- **🗺️ Legend button** to preview tone-to-color mappings
 
 ---
 
@@ -79,18 +63,19 @@ Advanced XOR logic combining color and sound patterns
 
 ```bash
 # 🏴‍☠️ Clone the treasure map
-git clone <repository-url>
+git clone https://github.com/Raghav-M-Daga/Chromabeat
 cd chromabeat
 
 # 🧭 Install your crew (dependencies)
 npm install
-# or
-yarn install
 
 # ⛵ Set sail on the development seas
 npm run dev
-# or
-yarn dev
+# Next.js will start on port 3000; if busy, it will choose the next available port
+
+# 🏗️ Build for production voyage
+npm run build
+npm start
 
 # 🌊 Navigate to http://localhost:3000 and start your adventure!
 ```
@@ -99,25 +84,33 @@ yarn dev
 
 ---
 
-## 🎯 How to Navigate the Game
+## 🎯 How to Navigate the Game _(For Fellow Islanders)_
 
 <div style="border: 2px dashed #20B2AA; padding: 1.5em; border-radius: 15px; background: linear-gradient(45deg, #E0F6FF, #F0F8FF);">
 
-### 🧭 **Step-by-Step Gameplay**
+### 🧭 **Step-by-Step Survival Guide**
 
-1. **🚀 Launch**: Click the "Start" button to begin your journey
-2. **👀 Observe**: Watch the center indicator and listen carefully to audio cues
-3. **⚡ React**: Click the correct colored button based on the current game mode
-4. **📈 Progress**: Each correct answer increases difficulty and score
-5. **💀 Survive**: You have 3 lives - use them wisely!
+1. **🚀 Launch**: Click the "Start" button to begin your island adventure
+2. **�️ Observe**: Watch the center color hint and listen to the tone cue
+3. **🎯 One Shot**: You have **one click per round** to pick the correct tile
+4. **📈 Score**: Correct answers increase your survival score
+5. **💀 Survive**: Wrong answers add mistakes - **three strikes and you're marooned!**
+6. **🗺️ Legend**: Use the bottom-left button to preview tone-to-color mappings
 
-### ⚔️ **Game Modes Explained**
+### ⚔️ **Island Mode Rules**
 
-| Mode        | Icon | Challenge              | Strategy         |
-| ----------- | ---- | ---------------------- | ---------------- |
-| **Color**   | 🎨   | Match the center color | Trust your eyes  |
-| **Sound**   | 🎵   | Identify the tone      | Trust your ears  |
-| **Inverse** | 🔄   | XOR logic puzzle       | Trust your brain |
+| Mode           | Background   | Truth Source       | Decoy            | Strategy                                |
+| -------------- | ------------ | ------------------ | ---------------- | --------------------------------------- |
+| **🎨 Color**   | Black        | Center color       | Random tone      | Trust your eyes - match the center      |
+| **🎵 Sound**   | Gradient     | Tone played        | Random center    | Trust your ears - find the tone's color |
+| **🌀 Striped** | Diagonal Mix | Color mixing logic | Complex patterns | Trust your brain - XOR the signals      |
+
+### 🧩 **Striped Mode Deep Dive**
+
+- Center shows one primary color (yellow/blue/green/red)
+- A tone plays for another primary color
+- Each outer tile displays a **visual mix** of center + that tile's original color
+- Click the tile at the **tone color's position** - it shows the correct center+tone mix!
 
 </div>
 
@@ -129,12 +122,12 @@ yarn dev
 
 ### 🏗️ **Built With Island Resources**
 
-| Technology                                                                                      | Version | Purpose        |
-| ----------------------------------------------------------------------------------------------- | ------- | -------------- |
-| ![Next.js](https://img.shields.io/badge/Next.js-15.4.6-black?style=flat-square&logo=next.js)    | 15.4.6  | Ship Framework |
-| ![React](https://img.shields.io/badge/React-19.1.0-61DAFB?style=flat-square&logo=react)         | 19.1.0  | UI Components  |
-| ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript) | 5.0     | Type Safety    |
-| ![Tailwind](https://img.shields.io/badge/Tailwind-4-38B2AC?style=flat-square&logo=tailwind-css) | 4.0     | Styling Engine |
+| Technology                                                                                      | Version                     | Purpose        |
+| ----------------------------------------------------------------------------------------------- | --------------------------- | -------------- |
+| ![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)        | 15 (App Router + Turbopack) | Ship Framework |
+| ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)             | 19                          | UI Components  |
+| ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript) | 5                           | Type Safety    |
+| ![Tailwind](https://img.shields.io/badge/Tailwind-4-38B2AC?style=flat-square&logo=tailwind-css) | 4 (`@tailwindcss/postcss`)  | Styling Engine |
 
 </div>
 
@@ -147,23 +140,24 @@ yarn dev
 ```
 🏴‍☠️ chromabeat/
 ├── 📁 src/
-│   ├── 🏠 app/                    # Main deck (Next.js App Router)
-│   │   ├── 🎨 globals.css         # Ship's paint job
+│   ├── 🏠 app/
+│   │   ├── 🎮 page.tsx            # Main game page (UI composition and controls)
 │   │   ├── 🏗️ layout.tsx          # Ship's blueprint
-│   │   └── 🎮 page.tsx            # The game arena
+│   │   └── 🎨 globals.css         # Ship's paint job
+│   ├── 🎣 hooks/
+│   │   ├── � useGameLogic.ts     # Round generation, timers, scoring, mistakes
+│   │   ├── 🔊 useAudio.ts         # Web Audio helpers (oscillator, gain)
+│   │   └── 🎵 useGameSounds.ts    # Audio effects crew
 │   ├── 🧩 components/
-│   │   ├── 🎯 game/               # Game components crew
+│   │   ├── 🎯 game/               # UI components (board, overlays, buttons, indicators)
 │   │   │   ├── 🎮 GameInterface.tsx
 │   │   │   ├── 📊 ScoreIndicator.tsx
 │   │   │   ├── ❌ MistakesIndicator.tsx
 │   │   │   └── 🎵 (more game components)
 │   │   └── 🔧 ui/                 # Reusable UI tools
-│   ├── 🎣 hooks/
-│   │   ├── 🔊 useAudio.ts         # Sound captain
-│   │   ├── 🎮 useGameLogic.ts     # Game master
-│   │   └── 🎵 useGameSounds.ts    # Audio effects crew
 │   └── 📚 lib/
-│       └── 🛠️ utils.ts            # Utility toolkit
+│       └── �️ utils.ts            # cn utility (class merging)
+├── 🔧 postcss.config.js           # Tailwind v4 PostCSS plugin
 ├── 📦 package.json                # Cargo manifest
 └── 📖 README.md                   # This treasure map!
 ```
@@ -229,13 +223,67 @@ yarn dev
 
 <div style="background-color:#FFF8DC; border: 2px solid #DAA520; padding: 1.5em; border-radius: 10px;">
 
-- 🌐 **Full Multiplayer**: Battle other island survivors
-- 🏆 **Leaderboards**: Island-wide high scores
-- 🎭 **New Game Modes**: Pattern recognition challenges
-- 🎨 **Custom Themes**: Personalize your ship
-- 🏅 **Achievement System**: Unlock island treasures
-- 📱 **Mobile Optimization**: Play anywhere on the island
+- � **Accessibility enhancements**: Visual patterns to complement color perception
+- ⚡ **Difficulty scaling**: Shorter timers and misdirection cues for advanced players
+- 🌐 **Online multiplayer**: Validate inputs and sync rounds via simple server
+- 🏆 **Leaderboards**: Island-wide high scores and statistics
+- 🎭 **New Game Modes**: Additional pattern recognition challenges
+- 📱 **Mobile Optimization**: Enhanced touch controls for island exploration
 
+</div>
+
+---
+
+## 📜 Developer's Island Journal
+
+<div style="background-color:#FDF5E6; border: 2px solid #D2691E; padding: 2em; border-radius: 15px; margin: 2em 0;">
+
+### 🌅 **Day 1-2: Brainstorming & Ideation**
+
+_Exploring color-only game concepts with AI assistance. Sifted through puzzle mechanics and emotion-boarding ideas. Simon Says variant emerged as the most approachable and replayable concept._
+
+### 🏗️ **Day 3-4: v0 UI & Initial Build**
+
+_Generated clean UI scaffold with four circular buttons and central hint. Established basic "sequence + playback + click to match" flow, Web Audio integration, and fundamental game state._
+
+### � **Day 5: Tailwind v4 Integration**
+
+_Switched to Tailwind CSS v4 with new PostCSS plugin architecture. Configured utility-first styling with path aliases via tsconfig.json._
+
+### ⚡ **Day 6-7: Gameplay Refinement**
+
+_Replaced long sequences with snappy single-click rounds. Added green/red success/failure overlays. Streamlined audio feedback to only play clicked color tones._
+
+### 🎭 **Day 8-9: Mode Differentiation**
+
+_Implemented distinct backgrounds for instant mode recognition: solid black (Color), gradient (Sound), diagonal stripes (Striped). Each mode now has clear visual identity._
+
+### 🎵 **Day 10: Audio Clarity & Legend**
+
+_Spaced pitches widely (A3/A4/A5/A6) for better distinction. Added legend button for tone-to-color mapping preview with demo pause functionality._
+
+### 🌈 **Day 11-12: Striped Mode Evolution**
+
+_Multiple iterations on color mixing logic. Final implementation uses intuitive primary combinations with fixed palette (red+blue→magenta, blue+green→cyan, etc.). Removed ambiguous blends._
+
+### 🔧 **Day 13: Stabilization & Polish**
+
+_Fixed Tailwind v4 PostCSS issues. Consolidated utilities and class merging. Split logic into focused hooks and components. Resolved Windows shell quirks and port conflicts._
+
+### 🚀 **Next Voyage Plans**
+
+_Accessibility improvements, difficulty scaling, and multiplayer implementation ready for future development cycles._
+
+</div>
+
+---
+
+## 📄 License
+
+**MIT** - Built for the Shipwrecked Challenge with ⚓ and 🎵
+
+<div style="background-color:#E8F4F8; border-left: 4px solid #0077B6; padding: 1em; margin: 1em 0;">
+<em>This project was bootstrapped with <a href="https://nextjs.org/docs/app/api-reference/cli/create-next-app">create-next-app</a> and enhanced for the island adventure!</em>
 </div>
 
 ---
