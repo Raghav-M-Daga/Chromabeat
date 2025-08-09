@@ -10,6 +10,7 @@ interface GameInterfaceProps {
         mode: GameMode
         isPlayerTurn: boolean
         gameOver: boolean
+        optionMixes?: Record<ButtonColor, string> | null
     }
     INVERTED_BUTTON_COLORS: Record<ButtonColor, string>
     BUTTON_COLORS: Record<ButtonColor, string>
@@ -39,7 +40,9 @@ export default function GameInterface({
                 <div className="row-start-2 col-start-2 z-10 flex items-center justify-center">{getCenterIcon()}</div>
                 {BUTTON_ORDER.map((color) => {
                     const bg =
-                        gameState.mode === "inverse" ? INVERTED_BUTTON_COLORS[color] : BUTTON_COLORS[color]
+                        gameState.mode === "inverse" && gameState.optionMixes
+                            ? gameState.optionMixes[color]
+                            : BUTTON_COLORS[color]
                     const glow = activeButton === color ? `0 0 30px ${bg}` : `0 0 15px ${bg}80`
                     return (
                         <button
