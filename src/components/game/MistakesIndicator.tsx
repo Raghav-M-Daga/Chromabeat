@@ -3,7 +3,7 @@ import { X } from "lucide-react"
 
 export default function MistakesIndicator({ mistakes }: { mistakes: number }) {
     return (
-        <div className="flex-1 flex justify-end space-x-2 sm:mr-1 mr-0">
+        <div className="flex-1 flex justify-end space-x-0 sm:space-x-2 sm:mr-1 mr-0">
             {Array.from({ length: 3 }).map((_, i) => (
                 <div
                     key={i}

@@ -9,7 +9,8 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: []
+  
 } satisfies Config
 
 

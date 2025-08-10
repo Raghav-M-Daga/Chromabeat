@@ -18,17 +18,17 @@ import useGameLogic from "@/hooks/useGameLogic"
 type ButtonColor = "yellow" | "blue" | "green" | "red"
 
 const BUTTON_COLORS: Record<ButtonColor, string> = {
-    yellow: "#FFD500",
-    blue: "#0074D9",
-    green: "#2ECC40",
-    red: "#FF4136",
+    yellow: "yellow-400",
+    blue: "blue-500",
+    green: "green-600",
+    red: "red-500",
 }
 
 const COMBINATION_BUTTON_COLORS: Record<ButtonColor, string> = {
-    yellow: "#002AFF",
-    blue: "#FF8B26",
-    green: "#D133BF",
-    red: "#00BEC9",
+    yellow: "blue-700",
+    blue: "orange-400",
+    green: "fuchsia-600",
+    red: "cyan-500",
 }
 
 const BUTTON_ORDER: ButtonColor[] = ["yellow", "blue", "green", "red"]
@@ -94,7 +94,7 @@ export default function GamePage() {
         }
 
         progressRef.current.style.width = "100%"
-        progressRef.current.style.backgroundColor = "#FFFFFF"
+        progressRef.current.style.backgroundColor = "rgb(255 255 255)"
 
         const update = () => {
             const elapsed = (Date.now() - gameState.startTime!) / 1000
@@ -103,7 +103,7 @@ export default function GamePage() {
 
             if (progressRef.current) {
                 progressRef.current.style.width = `${progressPct}%`
-                progressRef.current.style.backgroundColor = newTimeLeft < 1 ? "#EF4444" : "#FFFFFF"
+                progressRef.current.style.backgroundColor = newTimeLeft < 1 ? "rgb(239 68 68)" : "rgb(255 255 255)"
             }
 
             if (newTimeLeft > 0) {
@@ -262,7 +262,7 @@ export default function GamePage() {
             case "sound":
                 return "bg-gradient-to-b from-gray-800 to-black"
             case "combination":
-                return "bg-[repeating-linear-gradient(45deg,#1a1a1a_0px,#1a1a1a_5px,#2a2a2a_5px,#2a2a2a_10px)]"
+                return "bg-[repeating-linear-gradient(45deg,theme(colors.gray.900)_0px,theme(colors.gray.900)_5px,theme(colors.gray.800)_5px,theme(colors.gray.800)_10px)]"
             default:
                 return "bg-black"
         }
@@ -273,8 +273,7 @@ export default function GamePage() {
         const bg = BUTTON_COLORS[gameState.centerColor];
         return (
             <div
-                className="w-14 h-14 md:w-16 md:h-16 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.25)] border border-white/20"
-                style={{ backgroundColor: bg }}
+                className={cn("w-14 h-14 md:w-16 md:h-16 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.25)] border border-white/20", `bg-${bg}`)}
             />
         )
     }
@@ -331,11 +330,18 @@ export default function GamePage() {
 
             <LegendButton
                 isPlaying={gameState.isPlaying}
+                gameOver={gameState.gameOver}
                 isDemoPlaying={isDemoPlaying}
                 onClick={playLegend}
             />
 
-            <div className="absolute bottom-8 right-8 z-10">
+            <MultiplayerButton
+                isDemoPlaying={isDemoPlaying}
+                onClick={handleMultiplayerClick}
+                isPlaying={gameState.isPlaying}
+            />
+
+            {/* <div className="absolute bottom-8 right-8 z-10">
                 <button
                     aria-label="Restart game"
                     onClick={handleStartNewGame}
@@ -344,7 +350,6 @@ export default function GamePage() {
                         "w-12 h-12 rounded-full bg-white/20 border-2 border-white/60 hover:bg-white/30 transition-all duration-300 flex items-center justify-center", gameState.isPlaying && "opacity-60 cursor-not-allowed"
                     )}
                 >
-                    {/* reload icon */}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -357,7 +362,7 @@ export default function GamePage() {
                         <path d="M21 3v6h-6" />
                     </svg>
                 </button>
-            </div>
+            </div> */}
 
             {(!gameState.isPlaying || gameState.gameOver) && (
                 <StartButton

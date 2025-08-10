@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@source inline("bg-yellow-400 bg-blue-500 bg-green-600 bg-red-500 bg-blue-700 bg-orange-400 bg-fuchsia-600 bg-cyan-500 bg-purple-700 bg-orange-500 bg-amber-800 bg-green-500 bg-lime-400 text-yellow-400 text-blue-500 text-green-600 text-red-500 text-blue-700 text-orange-400 text-fuchsia-600 text-cyan-500 text-purple-700 text-orange-500 text-amber-800 text-green-500 text-lime-400 text-yellow-400/50 text-blue-500/50 text-green-600/50 text-red-500/50 text-blue-700/50 text-orange-400/50 text-fuchsia-600/50 text-cyan-500/50 text-purple-700/50 text-orange-500/50 text-amber-800/50 text-green-500/50 text-lime-400/50");
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
